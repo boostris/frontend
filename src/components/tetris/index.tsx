@@ -1,36 +1,38 @@
 import { useEffect, useRef } from 'react';
 import styled from '@emotion/styled';
-import { ATTACK_BAR, BOARD_HEIGHT, BOARD_WIDTH } from '../../constants/tetris/constants';
-
-export const BLOCK_ONE_SIZE: number = 24;
+import { ATTACK_BAR, BOARD_HEIGHT, BOARD_WIDTH, BLOCK_SIZE } from '../../constants/tetris/constants';
 
 const Tetris = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  const drawBoardBackground = (canvas: HTMLCanvasElement | null, width: number, height: number, blockSize: number) => {
-    const ctx = canvas?.getContext('2d') as CanvasRenderingContext2D;
+  const drawBoardBackground = () => {
+    if (!canvasRef.current) {
+      return;
+    }
+
+    const ctx = canvasRef.current.getContext('2d') as CanvasRenderingContext2D;
 
     ctx.strokeStyle = '#555555';
     ctx.lineWidth = 1;
     ctx.translate(0.5, 0.5);
 
+    // 가로 선
     for (let i = 0; i <= 20; i++) {
-      // 가로 선
-      ctx.moveTo(0, i * blockSize);
-      ctx.lineTo(width, i * blockSize);
+      ctx.moveTo(0, i * BLOCK_SIZE);
+      ctx.lineTo(BOARD_WIDTH, i * BLOCK_SIZE);
     }
 
+    // 세로 선
     for (let i = 0; i <= 10; i++) {
-      // 세로 선
-      ctx.moveTo(i * blockSize, 0);
-      ctx.lineTo(i * blockSize, height);
+      ctx.moveTo(i * BLOCK_SIZE, 0);
+      ctx.lineTo(i * BLOCK_SIZE, BOARD_HEIGHT);
     }
 
     ctx.stroke();
   };
 
   useEffect(() => {
-    drawBoardBackground(canvasRef.current, BOARD_WIDTH, BOARD_HEIGHT, BLOCK_ONE_SIZE);
+    drawBoardBackground();
   }, []);
 
   return <Container ref={canvasRef} className="board" width={BOARD_WIDTH + ATTACK_BAR} height={BOARD_HEIGHT} />;
